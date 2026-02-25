@@ -1,0 +1,10 @@
+# .vscode
+.mypy_cache
+docker-stack.yml
+/redis
+/app-db-data
+*.ipynb
+.ipynb_checkpoints
+/.idea
+__pycache__
+.venv
