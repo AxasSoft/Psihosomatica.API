@@ -210,11 +210,6 @@ class CRUDUser(AsyncCRUDBase[User, schemas.CreatingUser, schemas.UpdatingUser]):
     async def delete_user(self, db: AsyncSession, *, user: User):
         user.is_active = False
 
-        stmt_objects = Select(models.Object).where(models.Object.user_id == user.id)
-        objects_user =  await db.execute(stmt_objects)
-        for object in objects_user.scalars().all():
-            object.is_active = False
-
         logging.info(f'Почта {user.email} и телефон {user.phone} откреплены для пользователя {user.id}')
         user.email = None
         user.phone = None
