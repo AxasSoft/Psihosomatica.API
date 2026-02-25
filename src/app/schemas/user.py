@@ -42,13 +42,10 @@ class UpdatingUser(BaseModel):
     last_name: str | None = None
     patronymic: str| None = None
     gender: Gender | None = None
-    city: str | None = None
 
 
 class UpdatingUserForCP(UpdatingUser):
     is_superuser: bool | None = None
-    is_admin: bool | None = None
-    password: str | None = None
     phone: str | None = None
     email: EmailStr | None = Field(None, title='Email')
 
