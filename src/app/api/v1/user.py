@@ -48,7 +48,6 @@ async def get_all_user(
         db: deps.DbDependency,
         current_user: deps.CurrentActiveSuperUserDependency,
         is_active: bool = Query(True),
-        is_admin: bool = Query(None),
         page: int | None = Query(None),
         q: str | None = Query(None),
         order_by: str | None = Query(None, description="Если хотите получить объекты в обратном порядке, то поставьте '-' перед названием "),
@@ -60,7 +59,6 @@ async def get_all_user(
         is_active=is_active,
         q=q,
         order_by=order_by,
-        is_admin=is_admin,
     )
 
     users = [await getters.get_user(db=db, user=user) for user in user_all]

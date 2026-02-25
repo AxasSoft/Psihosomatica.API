@@ -12,7 +12,7 @@ from redis.asyncio import Redis
 
 
 class RedisPrefix:
-    pass
+    user = "user:{0}:object"
 
 redis_prefix = RedisPrefix()
 
