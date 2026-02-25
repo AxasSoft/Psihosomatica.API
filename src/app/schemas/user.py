@@ -42,6 +42,9 @@ class UpdatingUser(BaseModel):
     last_name: str | None = None
     patronymic: str| None = None
     gender: Gender | None = None
+    age: int | None = Field(None)
+    weight: int | None = Field(None)
+    level: int | None = Field(None)
 
 
 class UpdatingUserForCP(UpdatingUser):
