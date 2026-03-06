@@ -9,7 +9,7 @@ class BaseLesson(BaseModel):
     name: str = Field(...)
     description: str = Field(...)
 
-    stage_id: int = Field(...)
+    stage_id: int | None = Field(None)
 
 
 class CreatingLesson(BaseLesson):

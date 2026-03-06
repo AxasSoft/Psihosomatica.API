@@ -11,7 +11,7 @@ async def get_lesson(db: AsyncSession, lesson: Lesson) -> GettingLesson:
     return transform(
         lesson,
         GettingLesson,
-        tasks = [get_task(task) for task in lesson.tasks],
+        tasks = [await get_task(db, task) for task in lesson.tasks] if lesson.tasks else [],
     )
 
 async def get_lesson_short(db: AsyncSession, lesson: Lesson) -> GettingLessonShort:

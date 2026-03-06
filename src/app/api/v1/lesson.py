@@ -24,9 +24,10 @@ async def create_lesson(
     db: deps.DbDependency,
     current_user: deps.CurrentActiveSuperUserDependency,
 ):
-    stage_id = data.stage_id
-    stage = crud.stage.get(db=db, id=stage_id)
-    raise_if_none(stage, message="Этап не найден")
+    if data.stage_id is not None:
+        stage_id = data.stage_id
+        stage = await crud.stage.get(db=db, id=stage_id)
+        raise_if_none(stage, message="Этап не найден")
 
     lesson = await crud.lesson.create(db=db, obj_in=data)
     await db.commit()
@@ -70,6 +71,11 @@ async def update_lesson(
 ):
     lesson = await crud.lesson.get_by(db=db, id=lesson_id)
     raise_if_none(lesson, message="Урок не найден")
+
+    if data.stage_id is not None:
+        stage_id = data.stage_id
+        stage = await crud.stage.get(db=db, id=stage_id)
+        raise_if_none(stage, message="Этап не найден")
 
     lesson_get = await crud.lesson.update(db=db, db_obj=lesson, obj_in=data)
     return schemas.response.Response(

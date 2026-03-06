@@ -24,8 +24,9 @@ async def create_task(
     db: deps.DbDependency,
     current_user: deps.CurrentActiveSuperUserDependency,
 ):
-    lesson = await crud.lesson.get(db=db, id=data.lesson_id)
-    raise_if_none(lesson, message="Урок не найден")
+    if data.lesson_id is not None:
+        lesson = await crud.lesson.get(db=db, id=data.lesson_id)
+        raise_if_none(lesson, message="Урок не найден")
 
     task = await crud.task.create(db=db, obj_in=data)
 
@@ -69,6 +70,10 @@ async def update_task(
     task = await crud.task.get_by(db=db, id=task_id)
     raise_if_none(task, message="Задание не найдено")
 
+    if data.lesson_id is not None:
+        lesson = await crud.lesson.get(db=db, id=data.lesson_id)
+        raise_if_none(lesson, message="Урок не найден")
+
     task = await crud.task.update(db=db, db_obj=task, obj_in=data)
 
     return schemas.response.Response(
@@ -76,15 +81,15 @@ async def update_task(
     )
 
 @router.get(
-    "/task/all/",
+    "/cp/task/all/",
     response_model=schemas.response.Response[List[schemas.GettingTask]],
     name="Получение всех заданий",
     responses=get_responses_description_by_codes([400, 401, 403, 422]),
-    tags=["Задания"],
+    tags=["Административная панель / Задания"],
 )
 async def get_tasks(
     db: deps.DbDependency,
-    current_user: deps.CurrentActiveUserDependency,
+    current_user: deps.CurrentActiveSuperUserDependency,
     page: int = Query(1),
 ):
     tasks, paginator = await crud.task.get_page(db=db, page=page)
@@ -118,11 +123,11 @@ async def get_tasks(
     response_model=schemas.response.Response[schemas.GettingTask],
     name="Получение задания",
     responses=get_responses_description_by_codes([400, 401, 403, 422]),
-    tags=["Задания"],
+    tags=["Административная панель / Задания"],
 )
 async def get_task_cp(
     db: deps.DbDependency,
-    current_user: deps.CurrentActiveUserDependency,
+    current_user: deps.CurrentActiveSuperUserDependency,
     task_id: int = Path(...),
 ):
     task = await crud.task.get(db=db, id=task_id)

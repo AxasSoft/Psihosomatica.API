@@ -25,7 +25,6 @@ async def create_stage_cp(
     current_user: deps.CurrentActiveSuperUserDependency,
 ):
     stage = await crud.stage.create(db=db, obj_in=data)
-    await db.commit()
     await db.refresh(stage)
     stage_get = await getters.get_stage(db=db, stage=stage)
 

@@ -8,7 +8,7 @@ class BaseTask(BaseModel):
     type: TypeAnswer = Field(...)
     photo: str | None = Field(None)
 
-    lesson_id: int = Field(...)
+    lesson_id: int | None = Field(None)
 
 
 class CreatingTask(BaseTask):

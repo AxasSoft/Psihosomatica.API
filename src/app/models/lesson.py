@@ -10,7 +10,7 @@ class Lesson(Base):
     name: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
 
-    stage_id: Mapped[int] = mapped_column(ForeignKey("stage.id"), index=True)
+    stage_id: Mapped[int] = mapped_column(ForeignKey("stage.id", ondelete="SET NULL"), index=True, nullable=True)
     stage = relationship("Stage", back_populates="lessons", lazy="joined")
 
     tasks = relationship("Task", back_populates="lesson", lazy="selectin")
