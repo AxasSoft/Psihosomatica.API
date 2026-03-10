@@ -34,3 +34,12 @@ class User(Base):
         cascade="all, delete-orphan",
         back_populates="user",
     )
+
+    devices = relationship("Device", cascade="all, delete-orphan", back_populates="user", lazy="dynamic")
+    stories = relationship("Story", cascade="all, delete-orphan", back_populates="user", lazy="dynamic")
+    stories_attachments = relationship("StoryAttachment", cascade="all, delete-orphan", back_populates="user")
+    views = relationship("View", cascade="all, delete-orphan", back_populates="user")
+    hugs = relationship("Hug", cascade="all, delete-orphan", back_populates="user")
+    reactions = relationship("Reaction", cascade="all, delete-orphan", back_populates="user")
+    favorite_stories = relationship("FavoriteStory", cascade="all, delete-orphan", back_populates="user")
+    comments = relationship("Comment", cascade="all, delete-orphan", back_populates="user", lazy='dynamic')

@@ -5,3 +5,6 @@ from .token import *
 from .lesson import *
 from .stage import *
 from .task import *
+from .story import *
+from .story_attachment import *
+from .story_report import *
