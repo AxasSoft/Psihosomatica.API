@@ -38,8 +38,19 @@ class User(Base):
     devices = relationship("Device", cascade="all, delete-orphan", back_populates="user", lazy="dynamic")
     stories = relationship("Story", cascade="all, delete-orphan", back_populates="user", lazy="dynamic")
     stories_attachments = relationship("StoryAttachment", cascade="all, delete-orphan", back_populates="user")
+    story_hidings = relationship('StoryHiding', cascade="all, delete-orphan", back_populates="user", lazy="dynamic")
     views = relationship("View", cascade="all, delete-orphan", back_populates="user")
     hugs = relationship("Hug", cascade="all, delete-orphan", back_populates="user")
     reactions = relationship("Reaction", cascade="all, delete-orphan", back_populates="user")
     favorite_stories = relationship("FavoriteStory", cascade="all, delete-orphan", back_populates="user")
     comments = relationship("Comment", cascade="all, delete-orphan", back_populates="user", lazy='dynamic')
+    subject_story_reports = relationship('StoryReport', cascade="all, delete-orphan", back_populates="subject",
+                                         lazy="dynamic")
+    subject_subscriptions = relationship('Subscription', cascade="all, delete-orphan", back_populates="subject",
+                                         foreign_keys='Subscription.subject_id', lazy='dynamic')
+    object_subscriptions = relationship('Subscription', cascade="all, delete-orphan", back_populates="object_",
+                                        lazy="joined", foreign_keys='Subscription.object_id')
+    subject_user_blocks = relationship('UserBlock', cascade="all, delete-orphan", back_populates="subject",
+                                       lazy="dynamic", foreign_keys='UserBlock.subject_id')
+    object_user_blocks = relationship('UserBlock', cascade="all, delete-orphan", back_populates="object_",
+                                      lazy="dynamic", foreign_keys='UserBlock.object_id')

@@ -4,3 +4,4 @@ from .crud_user import user
 from .crud_lesson import lesson
 from .crud_task import task
 from .crud_stage import stage
+from .crud_story import story

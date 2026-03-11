@@ -17,3 +17,5 @@ from .story_hashtag import StoryHashtag
 from .story_hiding import StoryHiding
 from .story_report import StoryReport
 from .view import View
+from .subscription import Subscription
+from .user_block import UserBlock

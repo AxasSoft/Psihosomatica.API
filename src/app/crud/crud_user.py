@@ -185,12 +185,12 @@ class CRUDUser(AsyncCRUDBase[User, schemas.CreatingUser, schemas.UpdatingUser]):
     async def get_by_email(self, db: AsyncSession, *, email: str) -> User | None:
         stmt = select(self.model).where(self.model.email == email.lower())
         result = await db.execute(stmt)
-        return result.scalar_one_or_none()
+        return result.unique().scalar_one_or_none()
 
     async def get_by_tel(self, db: AsyncSession, *, tel: str) -> User | None:
         stmt = select(self.model).where(self.model.phone == tel)
         result = await db.execute(stmt)
-        return result.scalar_one_or_none()
+        return result.unique().scalar_one_or_none()
 
     async def create_or_get_by_tel(self, db: AsyncSession, tel: str):
         model = self.model

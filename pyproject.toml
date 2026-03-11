@@ -10,6 +10,7 @@ dependencies = [
     "alembic-postgresql-enum>=1.10.0",
     "asyncpg>=0.31.0",
     "beautifulsoup4>=4.14.3",
+    "botocore>=1.42.64",
     "celery[redis]>=5.3.1",
     "cryptography>=46.0.5",
     "emails>=0.6",
