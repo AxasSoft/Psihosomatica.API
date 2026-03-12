@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 
 class SettingsGetting(BaseModel):
-    price_for_premium: int
+    price_premium: int
 
 
 class SettingsCreate(BaseModel):
@@ -10,5 +10,5 @@ class SettingsCreate(BaseModel):
 
 
 class SettingsUpdate(BaseModel):
-    price_for_premium: int | None
+    price_premium: int | None
 

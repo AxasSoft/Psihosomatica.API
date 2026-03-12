@@ -7,3 +7,4 @@ from .hashtag import get_hashtag
 from .story import get_story
 from .story_attachment import get_story_attachment
 from .story_report import get_story_report
+from .settings import get_settings

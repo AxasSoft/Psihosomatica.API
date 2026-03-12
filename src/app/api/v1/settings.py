@@ -42,7 +42,7 @@ async def update_settings(
     settings = await crud.settings.get(db, 1)
     raise_if_none(settings, "Настройки не найдены")
 
-    updated = await crud.object.update(db=db, db_obj=settings, obj_in=data)
+    updated = await crud.settings.update(db=db, db_obj=settings, obj_in=data)
 
     return schemas.Response(
         data=await getters.get_settings(updated)
