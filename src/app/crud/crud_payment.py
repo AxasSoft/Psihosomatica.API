@@ -42,6 +42,6 @@ class CRUDPayment(AsyncCRUDBase[Payment, PaymentCreate, PaymentUpdate]):
     ):
         stmt = select(Payment).where(Payment.uuid==order_id)
         res = await db.execute(stmt)
-        return res.scalar_one_or_none()
+        return res.unique().scalar_one_or_none()
 
 payment = CRUDPayment(Payment)
