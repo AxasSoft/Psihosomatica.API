@@ -776,7 +776,7 @@ async def delete_user_story(
     await cache.delete_by_prefix(f'stories_by_user')
 
     await crud.story.remove(db,id=story_id)
-    return schemas.Response(None)
+    return schemas.Response(data=None)
 
 
 @router.get(
