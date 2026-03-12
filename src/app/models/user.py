@@ -28,6 +28,7 @@ class User(Base):
         server_default=func.now(),
         index=True
     )
+    is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
 
     devices = relationship(
         "Device",

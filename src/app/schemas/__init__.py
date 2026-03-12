@@ -9,3 +9,5 @@ from .story import *
 from .story_attachment import *
 from .story_report import *
 from .comment import *
+from .payment import *
+from .settings import *

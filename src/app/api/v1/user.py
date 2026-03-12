@@ -2,6 +2,8 @@ import logging
 from typing import List
 
 from fastapi import APIRouter, Depends, status, UploadFile, File, Body, Path, Query, Header
+from starlette.requests import Request
+from user_agents import parse
 
 from app import crud, models, schemas, deps, getters
 from app.exceptions import InaccessibleEntity, UnprocessableEntity, raise_if_none
@@ -265,3 +267,39 @@ async def update_password_current_user(
     await crud.user.change_password(db=db, data=data, user=current_user)
 
     return schemas.response.Response(data=None)
+
+@router.post(
+    "/users/me/pay_premium/",
+    name="Оплатить премиум подписку",
+    tags=['Пользователь'],
+    response_model = schemas.Response[schemas.PayPremiumData],
+    responses=get_responses_description_by_codes([400, 422, 403, 401]),
+)
+async def pay_premium_user(
+        request: Request,
+        db: deps.DbDependency,
+        current_user: models.User = Depends(deps.get_current_active_user),
+):
+    if current_user.is_premium:
+        raise InaccessibleEntity(message="У вас уже есть премиум подписка")
+    price_from_db = await crud.settings.get_price_from_db(db=db)
+
+    user_agent_string = request.headers.get('user-agent')
+    ua = parse(user_agent_string)
+
+    payment = models.Payment(
+        user_id=current_user.id,
+        description="Оплата премиума",
+        amount=price_from_db,
+        os=ua.os.family
+    )
+    db.add(payment)
+    await db.flush()
+
+    pay_link = await crud.payment.make_payment(
+        db=db,
+        payment=payment,
+        user=current_user,
+    )
+
+    return schemas.Response(data=schemas.PayPremiumData.model_validate({"pay_link": pay_link}))

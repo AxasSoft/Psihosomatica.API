@@ -29,6 +29,7 @@ class CreatingUserForCP(CreatingUser):
     password: str | None = Field(None, title="Пароль")
     gender: Gender | None = Field(None)
     is_superuser: bool | None = Field(False)
+    is_premium: bool | None = None
     phone: str
 
 
@@ -49,6 +50,7 @@ class UpdatingUser(BaseModel):
 
 class UpdatingUserForCP(UpdatingUser):
     is_superuser: bool | None = None
+    is_premium: bool | None = None
     phone: str | None = None
     email: EmailStr | None = Field(None, title='Email')
 
@@ -62,6 +64,7 @@ class BaseGettingUser(BaseUser):
     email: EmailStr | None
     phone: str | None
     is_superuser: bool
+    is_premium: bool
 
 
 class GettingUserShortInfo(BaseGettingUser):
@@ -80,3 +83,7 @@ class TokenWithUser(BaseModel):
 class ChangePassword(BaseModel):
     old_password: str
     new_password: str
+
+
+class PayPremiumData(BaseModel):
+    pay_link: str

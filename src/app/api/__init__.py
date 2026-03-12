@@ -8,6 +8,7 @@ from app.api.v1 import (
     stage,
     lesson,
     story,
+    settings,
 )
 
 api_router = APIRouter()
@@ -18,3 +19,4 @@ api_router.include_router(story.router)
 api_router.include_router(stage.router)
 api_router.include_router(lesson.router)
 api_router.include_router(task.router)
+api_router.include_router(settings.router)

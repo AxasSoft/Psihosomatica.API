@@ -19,3 +19,5 @@ from .story_report import StoryReport
 from .view import View
 from .subscription import Subscription
 from .user_block import UserBlock
+from .payment import Payment
+from .settings import Settings
