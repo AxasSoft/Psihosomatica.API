@@ -19,12 +19,12 @@ class Story(Base):
 
     user = relationship(User, back_populates='stories', lazy='joined')
     attachments = relationship("StoryAttachment", cascade="all, delete-orphan", back_populates="story", lazy='joined', order_by="StoryAttachment.num")
-    story_hashtags = relationship("StoryHashtag", cascade="all, delete-orphan", back_populates="story",lazy='joined')
+    story_hashtags = relationship("StoryHashtag", cascade="all, delete-orphan", back_populates="story",lazy='selectin')
     views = relationship("View", cascade="all, delete-orphan", back_populates="story", lazy='joined')
     hugs = relationship("Hug", cascade="all, delete-orphan", back_populates="story", lazy='joined')
     favorite_stories = relationship("FavoriteStory", cascade="all, delete-orphan", back_populates="story", lazy='joined')
-    comments = relationship("Comment", cascade="all, delete-orphan", back_populates="story", lazy='dynamic')
-    reactions = relationship("Reaction", cascade="all, delete-orphan", back_populates="story", lazy='dynamic')
+    comments = relationship("Comment", cascade="all, delete-orphan", back_populates="story", lazy='selectin')
+    reactions = relationship("Reaction", cascade="all, delete-orphan", back_populates="story", lazy='selectin')
     object_story_reports = relationship('StoryReport', cascade="all, delete-orphan", back_populates="object_",
-                                       lazy="dynamic")
-    story_hidings = relationship('StoryHiding', cascade="all, delete-orphan", back_populates="story", lazy="dynamic")
+                                       lazy="selectin")
+    story_hidings = relationship('StoryHiding', cascade="all, delete-orphan", back_populates="story", lazy="selectin")

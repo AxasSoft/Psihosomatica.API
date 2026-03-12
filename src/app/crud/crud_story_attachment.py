@@ -8,7 +8,7 @@ import os
 from botocore.client import BaseClient
 
 from fastapi import UploadFile
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud import AsyncCRUDBase
 from app.models.story_attachment import StoryAttachment
@@ -21,7 +21,7 @@ class CRUDStoryAttachment:
         self.s3_bucket_name: Optional[str] = None
         self.s3_client: Optional[BaseClient] = None
 
-    def upload(self, db: Session, *, current_user: User, attachment: UploadFile, num:Optional[int] = None) -> Optional[StoryAttachment]:
+    async def upload(self, db: AsyncSession, *, current_user: User, attachment: UploadFile, num:Optional[int] = None) -> Optional[StoryAttachment]:
 
         if 'video' not in attachment.content_type and 'image' not in attachment.content_type:
             return None
@@ -86,12 +86,13 @@ class CRUDStoryAttachment:
         story_attachment.user = current_user
 
         db.add(story_attachment)
-        db.commit()
-        db.refresh(story_attachment)
+        await db.commit()
+        await db.refresh(story_attachment)
 
         return story_attachment
 
-    def get_by_id(self, db: Session, id: int) -> Optional[StoryAttachment]:
-        return db.query(StoryAttachment).get(id)
+    async def get(self, db: AsyncSession, id: int) -> Optional[StoryAttachment]:
+        attachment = await db.get(StoryAttachment, id)
+        return attachment
 
 story_attachment = CRUDStoryAttachment(StoryAttachment)

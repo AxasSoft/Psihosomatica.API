@@ -5,14 +5,16 @@ from app.models.hashtag import Hashtag
 from app.schemas.hashtag import CreatingHashtag, UpdatingHashtag
 from app.schemas.response import Paginator
 from app.utils import pagination
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDHashtag(AsyncCRUDBase[Hashtag, CreatingHashtag, UpdatingHashtag]):
 
-    def update(
+    async def update(
         self,
-        db: Session,
+        db: AsyncSession,
         *,
         db_obj: Hashtag,
         obj_in: Union[UpdatingHashtag, Dict[str, Any]]
@@ -22,20 +24,20 @@ class CRUDHashtag(AsyncCRUDBase[Hashtag, CreatingHashtag, UpdatingHashtag]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
 
-        return super().update(db,db_obj=db_obj,obj_in=update_data)
+        return await super().update(db,db_obj=db_obj,obj_in=update_data)
 
-    def search(
+    async def search(
             self,
-            db: Session,
+            db: AsyncSession,
             *,
             search: Optional[str],
             page: Optional[int] = None
     ) -> Tuple[List[Hashtag], Paginator]:
-        hashtags = db.query(Hashtag)
+        stmt = select(Hashtag)
         if search is not None:
-            hashtags = hashtags.filter(Hashtag.text.ilike(f'%{search}%'))
-        hashtags = hashtags.order_by(Hashtag.text)
-        return pagination.get_page(hashtags, page)
+            stmt = stmt.where(Hashtag.text.ilike(f"%{search}%"))
+        stmt = stmt.order_by(Hashtag.text)
+        return await pagination.get_page_async(db, stmt, page)
 
 
 hashtag = CRUDHashtag(Hashtag)

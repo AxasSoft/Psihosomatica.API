@@ -45,12 +45,12 @@ class User(Base):
     favorite_stories = relationship("FavoriteStory", cascade="all, delete-orphan", back_populates="user")
     comments = relationship("Comment", cascade="all, delete-orphan", back_populates="user", lazy='dynamic')
     subject_story_reports = relationship('StoryReport', cascade="all, delete-orphan", back_populates="subject",
-                                         lazy="dynamic")
+                                         lazy="selectin")
     subject_subscriptions = relationship('Subscription', cascade="all, delete-orphan", back_populates="subject",
-                                         foreign_keys='Subscription.subject_id', lazy='dynamic')
+                                         foreign_keys='Subscription.subject_id', lazy='selectin')
     object_subscriptions = relationship('Subscription', cascade="all, delete-orphan", back_populates="object_",
                                         lazy="joined", foreign_keys='Subscription.object_id')
     subject_user_blocks = relationship('UserBlock', cascade="all, delete-orphan", back_populates="subject",
-                                       lazy="dynamic", foreign_keys='UserBlock.subject_id')
+                                       lazy="selectin", foreign_keys='UserBlock.subject_id')
     object_user_blocks = relationship('UserBlock', cascade="all, delete-orphan", back_populates="object_",
-                                      lazy="dynamic", foreign_keys='UserBlock.object_id')
+                                      lazy="selectin", foreign_keys='UserBlock.object_id')

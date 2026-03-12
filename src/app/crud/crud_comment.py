@@ -10,6 +10,7 @@ from app.schemas.story import CreatingStory, UpdatingStory
 from ..models import Comment, UserBlock
 from ..schemas import CreatingComment
 from ..utils import pagination
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDComment(AsyncCRUDBase[Story, CreatingStory, UpdatingStory]):
@@ -17,21 +18,21 @@ class CRUDComment(AsyncCRUDBase[Story, CreatingStory, UpdatingStory]):
     def __init__(self, model: Type[Story]):
         super().__init__(model=model)
 
-    def comment_story(self, db: Session, *, user: User, story: Story, obj_in: CreatingComment):
+    async def comment_story(self, db: AsyncSession, *, user: User, story: Story, obj_in: CreatingComment):
         comment = Comment()
         comment.story = story
         comment.user = user
         comment.text = obj_in.text
         db.add(comment)
-        user.rating += 1
         db.add(user)
-        db.commit()
-        db.refresh(comment)
+        await db.commit()
+        await db.refresh(comment)
 
         return comment
 
-    def get_story_comments(self, story: Story, page: Optional[int], current_user: Optional[User] = None):
-        return pagination.get_page(
+    async def get_story_comments(self, db: AsyncSession, story: Story, page: Optional[int], current_user: Optional[User] = None):
+        return await pagination.get_page_async(
+            db,
             (
                 story.comments
                     .join(UserBlock, Comment.user_id == UserBlock.object_id, isouter=True)

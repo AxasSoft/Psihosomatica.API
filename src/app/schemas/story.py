@@ -5,34 +5,34 @@ from pydantic import BaseModel, Field
 
 from .story_attachment import GettingStoryAttachment
 from .hashtag import GettingHashtag
-from .user import GettingUser
+from .user import GettingUserShortInfo
 from app.enums.reaction import ReactionType
 
 
 class CreatingStory(BaseModel):
-    text: Optional[str]
-    title: Optional[str]
-    video: Optional[int]
-    gallery: Optional[List[int]]
+    text: Optional[str] = None
+    title: Optional[str] = None
+    video: Optional[int] = None
+    gallery: Optional[List[int]] = []
     is_private: Optional[bool] = Field(False)
     is_short_story: Optional[bool] = Field(False)
-    hashtags: List[str]
+    hashtags: List[str] = []
 
 
 class UpdatingStory(BaseModel):
-    text: Optional[str]
-    title: Optional[str]
-    video: Optional[int]
-    gallery: Optional[List[int]]
-    is_private: Optional[bool]
-    is_short_story: Optional[bool]
-    hashtags: Optional[List[str]]
+    text: Optional[str] = None
+    title: Optional[str] = None
+    video: Optional[int] = None
+    gallery: Optional[List[int]] = None
+    is_private: Optional[bool] =None
+    is_short_story: Optional[bool] = None
+    hashtags: Optional[List[str]] = None
 
 
 class GettingStory(BaseModel):
     id: int
     created: int
-    user: GettingUser
+    user: GettingUserShortInfo
     title: Optional[str]
     text: Optional[str]
     video: Optional[GettingStoryAttachment]
@@ -52,7 +52,7 @@ class GettingStory(BaseModel):
 
 
 class GettingUserStories(BaseModel):
-    user: GettingUser
+    user: GettingUserShortInfo
     stories: List[GettingStory]
 
 

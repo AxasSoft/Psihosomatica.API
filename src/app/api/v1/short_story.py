@@ -6,7 +6,7 @@ from fastapi.params import Path, Header
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 
-from app import crud, models, schemas, getters, deps
+from app import  crud, models, schemas, getters, deps
 from app.exceptions import UnprocessableEntity, UnfoundEntity, ListOfEntityError, InaccessibleEntity
 from app.schemas import CreatingStory, UpdatingStory
 from app.schemas.story import HugBody, HidingBody, IsFavoriteBody
@@ -24,14 +24,14 @@ logger = logging.getLogger(__name__)
     responses=get_responses_description_by_codes([400, 401, 422]),
     tags=["Истории"]
 )
-def get_short_stories_from_subscriptions(
+async def get_short_stories_from_subscriptions(
         db: Session = Depends(deps.get_db),
         page: Optional[int] = Query(1, title="Номер страницы"),
         current_user: models.User = Depends(deps.get_current_active_user),
         cache: Cache = Depends(deps.get_cache_list),
 ):
-    def fatch_short_stories_subscriptions():
-        data, paginator = crud.story.get_short_stories_from_subscriptions(
+    async def fatch_short_stories_subscriptions():
+        data, paginator = await crud.story.get_short_stories_from_subscriptions(
             db,
             page=page,
             current_user=current_user,
@@ -49,7 +49,7 @@ def get_short_stories_from_subscriptions(
 
     key_tuple = ('short_stories_by_user',
                  f"user_subscriptions - {current_user.id} - page - {page} - grouped_by_users")
-    data, from_cache = cache.behind_cache(key_tuple, fatch_short_stories_subscriptions, ttl=7200)
+    data, from_cache = await cache.behind_cache(key_tuple, fatch_short_stories_subscriptions, ttl=7200)
     
     if from_cache:
         logger.info("From the cache")
@@ -66,7 +66,7 @@ def get_short_stories_from_subscriptions(
     responses=get_responses_description_by_codes([400, 401, 422]),
     tags=["Истории"]
 )
-def get_short_stories(
+async def get_short_stories(
         request: Request,
         db: Session = Depends(deps.get_db),
         page: Optional[int] = Query(1, title="Номер страницы"),
@@ -78,8 +78,8 @@ def get_short_stories(
         cache: Cache = Depends(deps.get_cache_list),
 
 ):
-    def fatch_short_stories():
-        data, paginator = crud.story.get_short_stories(
+    async def fatch_short_stories():
+        data, paginator = await crud.story.get_short_stories(
             db,
             page=page,
             current_user=current_user,
@@ -105,7 +105,7 @@ def get_short_stories(
     else:
         key_tuple = ('short_stories_by_user', f"page - \
                             {page} - grouped_by_users")
-    data, from_cache = cache.behind_cache(key_tuple, fatch_short_stories, ttl=7200)
+    data, from_cache = await cache.behind_cache(key_tuple, fatch_short_stories, ttl=7200)
 
 
     if from_cache:

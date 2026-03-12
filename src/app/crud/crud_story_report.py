@@ -5,6 +5,8 @@ from app.utils import pagination
 
 from sqlalchemy import String, or_, func, desc
 from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud import AsyncCRUDBase
 from app.models.user import User
@@ -15,23 +17,23 @@ from ..schemas.story_report import CreatingStoryReport, UpdatingStoryReport
 
 class CRUDStoryReport(AsyncCRUDBase[StoryReport, CreatingStoryReport, UpdatingStoryReport]):
 
-    def get_multi(
-            self, db: Session, *, page: Optional[int] = None
+    async def get_multi(
+            self, db: AsyncSession, *, page: Optional[int] = None
     ) -> Tuple[List[StoryReport], Paginator]:
 
-        query = db.query(StoryReport).order_by(StoryReport.is_satisfy != None, desc(StoryReport.created))
+        query = select(StoryReport).order_by(StoryReport.is_satisfy != None, desc(StoryReport.created))
 
-        return pagination.get_page(query, page)
+        return await pagination.get_page_async(db, query, page)
 
-    def create_for_users(self, db: Session, *, obj_in: CreatingStoryReport,subject:User,object_:Story):
+    async def create_for_users(self, db: AsyncSession, *, obj_in: CreatingStoryReport,subject:User,object_:Story):
         report = StoryReport()
         report.object_ = object_
         report.subject = subject
         report.additional_text = obj_in.additional_text
         report.reason = obj_in.reason
         db.add(report)
-        db.commit()
-        db.refresh(report)
+        await db.commit()
+        await db.refresh(report)
         return report
 
 

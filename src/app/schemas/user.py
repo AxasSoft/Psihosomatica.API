@@ -64,7 +64,11 @@ class BaseGettingUser(BaseUser):
     is_superuser: bool
 
 
-class GettingUser(BaseGettingUser):
+class GettingUserShortInfo(BaseGettingUser):
+    pass
+
+
+class GettingUser(GettingUserShortInfo):
     pass
 
 

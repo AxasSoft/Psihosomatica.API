@@ -15,5 +15,5 @@ class Hashtag(Base):
         "StoryHashtag",
         cascade="all, delete-orphan",
         back_populates="hashtag",
-        lazy='dynamic'
+        lazy='selectin'
     )
