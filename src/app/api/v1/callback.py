@@ -1,5 +1,4 @@
 import logging
-from datetime import timedelta
 
 from fastapi import APIRouter, Response
 
@@ -7,10 +6,7 @@ from app import crud, deps, models, schemas, enums
 from app.utils.datetime import utcnow
 from app.exceptions import InaccessibleEntity, UnprocessableEntity, raise_if_none
 from app.utils.response import get_responses_description_by_codes
-from app.services.etg_ostrovok_manager.etg_ostrovok_manager import ostrovok_manager, PICT_SIZE
 from app.exceptions import raise_if_none
-from app.services.celery.tasks import check_booking_status_task
-from app.enums import HotelBookingStatus
 
 
 router = APIRouter()

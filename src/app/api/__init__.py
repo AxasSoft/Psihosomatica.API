@@ -9,6 +9,7 @@ from app.api.v1 import (
     lesson,
     story,
     settings,
+    callback,
 )
 
 api_router = APIRouter()
@@ -20,3 +21,4 @@ api_router.include_router(stage.router)
 api_router.include_router(lesson.router)
 api_router.include_router(task.router)
 api_router.include_router(settings.router)
+api_router.include_router(callback.router)
