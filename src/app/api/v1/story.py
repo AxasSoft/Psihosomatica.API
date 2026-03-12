@@ -72,6 +72,7 @@ async def get_stories_by_user(
     tags=["Истории"]
 )
 async def get_stories_from_subscriptions(
+        request: Request,
         db: AsyncSession = Depends(deps.get_db),
         page: Optional[int] = Query(1, title="Номер страницы"),
         current_user: models.User = Depends(deps.get_current_active_user),
@@ -79,6 +80,10 @@ async def get_stories_from_subscriptions(
         is_hugged: Optional[bool] = Query(None),
         is_favorite: Optional[bool] = Query(None),
         is_short_story: Optional[bool] = Query(None),
+        x_real_ip: Optional[str] = Header(None),
+        accept_language: Optional[str] = Header(None),
+        user_agent: Optional[str] = Header(None),
+        x_firebase_token: Optional[str] = Header(None),
         cache: Cache = Depends(deps.get_cache),
 ):
     async def fatch_stories_subscriptions():
@@ -106,7 +111,16 @@ async def get_stories_from_subscriptions(
     else:
         key_tuple = ('stories_by_user', f"user_me - {current_user.id} - page - {page} - is_hugged - {is_hugged} - is_favorite - {is_favorite}")
     data, from_cache = await cache.behind_cache(key_tuple, fatch_stories_subscriptions, ttl=7200)
-    
+    await crud.user.handle_device(
+        db=db,
+        owner=current_user,
+        host=request.client.host,
+        x_real_ip=x_real_ip,
+        accept_language=accept_language,
+        user_agent=user_agent,
+        x_firebase_token=x_firebase_token,
+    )
+
     if from_cache:
         logger.info("From the cache")
     else:
@@ -206,10 +220,15 @@ async def get_stories_by_users(
     tags=["Истории"]
 )
 async def add_new_story(
+        request: Request,
         data: CreatingStory,
         db: AsyncSession = Depends(deps.get_db),
         current_user: models.User = Depends(deps.get_current_active_user),
         cache: Cache = Depends(deps.get_cache),
+        x_real_ip: Optional[str] = Header(None),
+        accept_language: Optional[str] = Header(None),
+        user_agent: Optional[str] = Header(None),
+        x_firebase_token: Optional[str] = Header(None),
 ):
     await cache.delete_by_prefix(f'short_stories_by_user')
     await cache.delete_by_prefix(f'stories_by_user')
@@ -269,6 +288,16 @@ async def add_new_story(
             message='Видео уже использовалось',
             description='Видео уже использовалось'
         )
+
+    await crud.user.handle_device(
+        db=db,
+        owner=current_user,
+        host=request.client.host,
+        x_real_ip=x_real_ip,
+        accept_language=accept_language,
+        user_agent=user_agent,
+        x_firebase_token=x_firebase_token,
+    )
 
     return schemas.Response(
         data=await getters.story.get_story(db, data, current_user)
@@ -797,6 +826,10 @@ async def get_stories_by_criteria(
         page: Optional[int] = Query(1, title="Номер страницы"),
         current_user: Optional[models.User] = Depends(deps.get_current_active_user_or_none),
         cache: Cache = Depends(deps.get_cache),
+        x_real_ip: Optional[str] = Header(None),
+        accept_language: Optional[str] = Header(None),
+        user_agent: Optional[str] = Header(None),
+        x_firebase_token: Optional[str] = Header(None),
 ): 
     if user_id is not None:
         user = await crud.user.get(db,user_id)
@@ -847,7 +880,16 @@ async def get_stories_by_criteria(
                  {page} - is_hugged - {is_hugged} - is_favorite - {is_favorite} - user_id - {user_id} - \
                  hashtag_id - {hashtag_id} - search - {search}")
     data, from_cache = await cache.behind_cache(key_tuple, fatch_stories_criteria, ttl=7200)
-    
+    await crud.user.handle_device(
+        db=db,
+        owner=current_user,
+        host=request.client.host,
+        x_real_ip=x_real_ip,
+        accept_language=accept_language,
+        user_agent=user_agent,
+        x_firebase_token=x_firebase_token,
+    )
+
     if from_cache:
         logger.info("From the cache")
     else:
